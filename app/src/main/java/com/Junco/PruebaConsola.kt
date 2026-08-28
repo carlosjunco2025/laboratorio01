@@ -1,7 +1,8 @@
 package com.Junco
+
 import java.util.Scanner
 
-// Enum con tarifas base actualizadas
+// Enum con tarifas base
 enum class TipoVehiculo(val descripcion: String, val tarifaBase: Double) {
     MOTO("Moto", 2.0),
     AUTO("Auto", 4.0),
@@ -14,7 +15,7 @@ enum class TipoVehiculo(val descripcion: String, val tarifaBase: Double) {
     }
 }
 
-// Data class con los cálculos integrados
+// Data class con cálculos integrados
 data class Vehiculo(
     val placa: String,
     val tipo: TipoVehiculo,
@@ -78,7 +79,14 @@ fun main() {
         println("✔ Vehículo registrado correctamente.")
     }
 
+    // 1. Mostrar resumen individual y gran total recaudado
     mostrarResumen(listaVehiculos)
+
+    // 2. Mostrar estadísticas consolidadas y conteo por tipo
+    mostrarEstadisticas(listaVehiculos)
+
+    // 3. Flujo interactivo para búsqueda por placa
+    buscarVehiculoPorPlaca(scanner, listaVehiculos)
 }
 
 fun leerPlaca(scanner: Scanner): String {
@@ -157,4 +165,59 @@ fun mostrarResumen(vehiculos: List<Vehiculo>) {
     println("=========================================================================================")
     println("GRAN TOTAL RECAUDADO: S/ %.2f".format(granTotalRecaudado))
     println("=========================================================================================")
+}
+
+fun mostrarEstadisticas(vehiculos: List<Vehiculo>) {
+    if (vehiculos.isEmpty()) return
+
+    println("\n=========================================================================================")
+    println("                                ESTADÍSTICAS Y RESULTADOS                                ")
+    println("=========================================================================================")
+
+    val mayorPago = vehiculos.maxByOrNull { it.totalPagar }
+    val masHoras = vehiculos.maxByOrNull { it.horasEstacionado }
+    val promedioRecaudado = vehiculos.map { it.totalPagar }.average()
+
+    if (mayorPago != null) {
+        println("📌 Vehículo con mayor pago     : Placa ${mayorPago.placa} (${mayorPago.tipo.descripcion}) - Total: S/ %.2f".format(mayorPago.totalPagar))
+    }
+    if (masHoras != null) {
+        println("📌 Vehículo con más horas      : Placa ${masHoras.placa} (${masHoras.tipo.descripcion}) - ${masHoras.horasEstacionado} horas")
+    }
+    println("📌 Promedio de cobro por vehículo: S/ %.2f".format(promedioRecaudado))
+
+    println("\n--- Conteo de Vehículos por Tipo ---")
+    val conteoPorTipo = vehiculos.groupBy { it.tipo }
+    TipoVehiculo.entries.forEach { tipo ->
+        val cantidad = conteoPorTipo[tipo]?.size ?: 0
+        println(" • %-10s: %d".format(tipo.descripcion, cantidad))
+    }
+    println("=========================================================================================")
+}
+
+fun buscarVehiculoPorPlaca(scanner: Scanner, vehiculos: List<Vehiculo>) {
+    println("\n--- BÚSQUEDA DE VEHÍCULO POR PLACA ---")
+    val continuar = leerBooleanSN(scanner, "¿Desea buscar un vehículo por placa? (S/N): ")
+
+    if (!continuar) return
+
+    print("Ingrese la placa a buscar: ")
+    val placaBusqueda = scanner.nextLine().trim().uppercase()
+
+    val vehiculoEncontrado = vehiculos.find { it.placa == placaBusqueda }
+
+    println("\n-----------------------------------------------------------------------------------------")
+    if (vehiculoEncontrado != null) {
+        println("✔ VEHÍCULO ENCONTRADO:")
+        println(" • Placa             : ${vehiculoEncontrado.placa}")
+        println(" • Tipo              : ${vehiculoEncontrado.tipo.descripcion}")
+        println(" • Horas estacionado : ${vehiculoEncontrado.horasEstacionado}")
+        println(" • Cliente Frecuente : ${if (vehiculoEncontrado.esClienteFrecuente) "Sí" else "No"}")
+        println(" • Subtotal          : S/ %.2f".format(vehiculoEncontrado.subtotal))
+        println(" • Descuento         : S/ %.2f".format(vehiculoEncontrado.descuento))
+        println(" • Total a Pagar     : S/ %.2f".format(vehiculoEncontrado.totalPagar))
+    } else {
+        println("❌ No se encontró ningún vehículo registrado con la placa '$placaBusqueda'.")
+    }
+    println("-----------------------------------------------------------------------------------------")
 }
