@@ -22,6 +22,12 @@ Fase 3
 
 <img width="603" height="224" alt="image" src="https://github.com/user-attachments/assets/38c0fdb5-556c-4a72-9abd-ec4f8b899395" />
 
+Comits:
+
+ <img width="747" height="506" alt="image" src="https://github.com/user-attachments/assets/3136e1f3-2ca3-4457-bd3b-91f84a4c5663" />
+
+Estan los 3 comits hechos en clase , los otros fueron por el tema del Readme y use una carpeta del lab anterior 
+
 Resultado :
 
 <img width="959" height="506" alt="image" src="https://github.com/user-attachments/assets/fd5c906f-68cb-4b84-846a-f0c5eb72b45f" />
