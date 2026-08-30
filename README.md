@@ -1,22 +1,23 @@
-# Laboratorio 01: Android Studio y GitHub
+# Laboratorio 02: Android Studio y GitHub
 
 -Alumno:Carlos Junco 
 -Curso: Programación en Móviles  
 
 -Descripción
-Aplicación móvil inicial desarrollada en Android Studio utilizando Kotlin y Jetpack Compose. Presenta un saludo personalizado, el curso y un botón interactivo.
+Este laboratorio nos pidio crea un programa en Kotlin para un sistema de estacionamiento.
 
-Captura de Pantalla
-<img width="692" height="676" alt="image" src="https://github.com/user-attachments/assets/9f009f8e-b283-4cd0-b263-842ec0f03021" />        
+Pront inicial para la ia:
+<img width="651" height="279" alt="image" src="https://github.com/user-attachments/assets/79a1386f-101d-489e-8929-5f0db251a95d" />
 
-<img width="609" height="664" alt="image" src="https://github.com/user-attachments/assets/364f6814-f08b-4759-afa6-c8445102328d" />
+Fase 1
+<img width="622" height="229" alt="image" src="https://github.com/user-attachments/assets/fa407cbc-e0f6-4b55-a575-e091a1aa9b2d" />
 
- <img width="409" height="165" alt="image" src="https://github.com/user-attachments/assets/e34f9bd8-be57-4117-8210-19ff11eb1305" />
+Fase 2 
+<img width="631" height="237" alt="image" src="https://github.com/user-attachments/assets/f3dfe343-1804-4989-bdf6-d348b03d791c" />
 
+Fase 3
+<img width="603" height="224" alt="image" src="https://github.com/user-attachments/assets/38c0fdb5-556c-4a72-9abd-ec4f8b899395" />
 
-  <img width="944" height="337" alt="image" src="https://github.com/user-attachments/assets/fcee1d31-d26a-453f-a4fe-0d47548b873d" />
+Resultado :
 
-
-
-
-
+<img width="959" height="506" alt="image" src="https://github.com/user-attachments/assets/fd5c906f-68cb-4b84-846a-f0c5eb72b45f" />
