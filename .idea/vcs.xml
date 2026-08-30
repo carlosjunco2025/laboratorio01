@@ -2,7 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/S2_Junco" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/s2_juncoS2SINIA" vcs="Git" />
   </component>
 </project>

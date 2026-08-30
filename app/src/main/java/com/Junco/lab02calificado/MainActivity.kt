@@ -1,12 +1,11 @@
-package com.junco.lab02calificado
+package com.Junco
 
 import java.util.Scanner
 
-// 1. Dominio: Tipo de vehículo como Enum para un typing seguro
-enum class TipoVehiculo(val descripcion: String) {
-    MOTO("Moto"),
-    AUTO("Auto"),
-    CAMIONETA("Camioneta");
+enum class TipoVehiculo(val descripcion: String, val tarifaBase: Double) {
+    MOTO("Moto", 2.0),
+    AUTO("Auto", 4.0),
+    CAMIONETA("Camioneta", 10.0);
 
     companion object {
         fun desdeString(input: String): TipoVehiculo? {
@@ -15,13 +14,33 @@ enum class TipoVehiculo(val descripcion: String) {
     }
 }
 
-// Data Class que representa la entidad Vehículo
 data class Vehiculo(
     val placa: String,
     val tipo: TipoVehiculo,
     val horasEstacionado: Int,
     val esClienteFrecuente: Boolean
-)
+) {
+    val subtotal: Double
+        get() {
+            var total = 0.0
+            val base = tipo.tarifaBase
+
+            for (hora in 1..horasEstacionado) {
+                total += when {
+                    hora <= 2 -> base
+                    hora in 3..5 -> base * 1.20
+                    else -> base * 1.50
+                }
+            }
+            return total
+        }
+
+    val descuento: Double
+        get() = if (esClienteFrecuente) subtotal * 0.10 else 0.0
+
+    val totalPagar: Double
+        get() = subtotal - descuento
+}
 
 fun main() {
     val scanner = Scanner(System.`in`)
@@ -29,14 +48,12 @@ fun main() {
 
     println("=== SISTEMA DE GESTIÓN DE ESTACIONAMIENTO ===")
 
-    // 2. Solicitar cantidad de vehículos a registrar
     val cantidadVehiculos = leerEnteroPositivo(
         scanner,
         mensaje = "Ingrese la cantidad de vehículos a registrar: ",
         minimo = 1
     )
 
-    // 3. Bucle para la captura de datos
     for (i in 1..cantidadVehiculos) {
         println("\n--- Registro del Vehículo #$i ---")
 
@@ -47,7 +64,7 @@ fun main() {
             mensaje = "Ingrese horas estacionado (mínimo 1): ",
             minimo = 1
         )
-        val esFrecuente = leerBooleanSN(scanner, "Is el conductor cliente frecuente? (S/N): ")
+        val esFrecuente = leerBooleanSN(scanner, "¿Es cliente frecuente? (S/N): ")
 
         val vehiculo = Vehiculo(
             placa = placa,
@@ -60,13 +77,9 @@ fun main() {
         println("✔ Vehículo registrado correctamente.")
     }
 
-    // 4. Mostrar resumen básico
     mostrarResumen(listaVehiculos)
+    mostrarEstadisticas(listaVehiculos)
 }
-
-// ==========================================
-// FUNCIONES DE VALIDACIÓN Y LECTURA ROBUTA
-// ==========================================
 
 fun leerPlaca(scanner: Scanner): String {
     while (true) {
@@ -116,22 +129,60 @@ fun leerBooleanSN(scanner: Scanner, mensaje: String): Boolean {
 }
 
 fun mostrarResumen(vehiculos: List<Vehiculo>) {
-    println("\n=======================================================")
-    println(" RESUMEN DE VEHÍCULOS REGISTRADOS (${vehiculos.size})")
-    println("=======================================================")
+    println("\n=========================================================================================")
+    println("                                RESUMEN DE COBRO DE BOLETAS                              ")
+    println("=========================================================================================")
 
-    println("%-12s | %-12s | %-8s | %-18s".format("PLACA", "TIPO", "HORAS", "CLIENTE FRECUENTE"))
-    println("-".repeat(57))
+    println("%-10s | %-10s | %-6s | %-12s | %-12s | %-12s".format(
+        "PLACA", "TIPO", "HORAS", "SUBTOTAL", "DESCUENTO", "TOTAL PAGAR"
+    ))
+    println("-".repeat(89))
+
+    var granTotalRecaudado = 0.0
 
     vehiculos.forEach { v ->
+        granTotalRecaudado += v.totalPagar
         println(
-            "%-12s | %-12s | %-8d | %-18s".format(
+            "%-10s | %-10s | %-6d | S/ %-9.2f | S/ %-9.2f | S/ %-9.2f".format(
                 v.placa,
                 v.tipo.descripcion,
                 v.horasEstacionado,
-                if (v.esClienteFrecuente) "Sí" else "No"
+                v.subtotal,
+                v.descuento,
+                v.totalPagar
             )
         )
     }
-    println("=======================================================")
+
+    println("=========================================================================================")
+    println("GRAN TOTAL RECAUDADO: S/ %.2f".format(granTotalRecaudado))
+    println("=========================================================================================")
+}
+
+fun mostrarEstadisticas(vehiculos: List<Vehiculo>) {
+    if (vehiculos.isEmpty()) return
+
+    println("\n=========================================================================================")
+    println("                                ESTADÍSTICAS Y RESULTADOS                                ")
+    println("=========================================================================================")
+
+    val mayorPago = vehiculos.maxByOrNull { it.totalPagar }
+    val masHoras = vehiculos.maxByOrNull { it.horasEstacionado }
+    val promedioRecaudado = vehiculos.map { it.totalPagar }.average()
+
+    if (mayorPago != null) {
+        println("📌 Vehículo con mayor pago     : Placa ${mayorPago.placa} (${mayorPago.tipo.descripcion}) - Total: S/ %.2f".format(mayorPago.totalPagar))
+    }
+    if (masHoras != null) {
+        println("📌 Vehículo con más horas      : Placa ${masHoras.placa} (${masHoras.tipo.descripcion}) - ${masHoras.horasEstacionado} horas")
+    }
+    println("📌 Promedio de cobro por vehículo: S/ %.2f".format(promedioRecaudado))
+
+    println("\n--- Conteo de Vehículos por Tipo ---")
+    val conteoPorTipo = vehiculos.groupBy { it.tipo }
+    TipoVehiculo.entries.forEach { tipo ->
+        val cantidad = conteoPorTipo[tipo]?.size ?: 0
+        println(" • %-10s: %d".format(tipo.descripcion, cantidad))
+    }
+    println("=========================================================================================")
 }
