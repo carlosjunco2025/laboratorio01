@@ -16,7 +16,7 @@ enum class TipoVehiculo(val descripcion: String, val tarifaBase: Double) {
     }
 }
 
-// Data class con cálculos integrados
+// Data class con la escala exacta de la pizarra
 data class Vehiculo(
     val placa: String,
     val tipo: TipoVehiculo,
@@ -30,9 +30,10 @@ data class Vehiculo(
 
             for (hora in 1..horasEstacionado) {
                 total += when {
-                    hora <= 2 -> base
-                    hora in 3..5 -> base * 1.25
-                    else -> base * 1.50
+                    hora <= 2 -> base                  // 0 a 2 hrs: tarifa base
+                    hora in 3..5 -> base * 1.20        // 3 a 5 hrs: +20%
+                    hora in 6..10 -> base * 1.40       // 6 a 10 hrs: +40%
+                    else -> base * 1.50                // 11 a más hrs: +50%
                 }
             }
             return total
@@ -99,7 +100,7 @@ fun main() {
 
     println("==========================================================================")
     println(String.format("GRAN TOTAL RECAUDADO: S/ %.2f", granTotal))
-    println("==========================================================================+")
+    println("==========================================================================")
 
     // --- ESTADÍSTICAS ---
     val mayorPago = listaVehiculos.maxByOrNull { it.totalPagar }
@@ -114,9 +115,9 @@ fun main() {
     println("\n==========================================================================")
     println("                        ESTADÍSTICAS Y RESULTADOS                         ")
     println("==========================================================================")
-    println("? Vehículo con mayor pago   : Placa ${mayorPago?.placa} (${mayorPago?.tipo?.descripcion}) - Total: S/ ${String.format("%.2f", mayorPago?.totalPagar)}")
-    println("? Vehículo con más horas    : Placa ${masHoras?.placa} (${masHoras?.tipo?.descripcion}) - ${masHoras?.horasEstacionado} horas")
-    println("? Promedio de cobro por vehículo: S/ ${String.format("%.2f", promedio)}")
+    println("◆ Vehículo con mayor pago   : Placa ${mayorPago?.placa} (${mayorPago?.tipo?.descripcion}) - Total: S/ ${String.format("%.2f", mayorPago?.totalPagar)}")
+    println("◆ Vehículo con más horas    : Placa ${masHoras?.placa} (${masHoras?.tipo?.descripcion}) - ${masHoras?.horasEstacionado} horas")
+    println("◆ Promedio de cobro por vehículo: S/ ${String.format("%.2f", promedio)}")
     println("\n--- Conteo de Vehículos por Tipo ---")
     println("◆ Moto      : $motos")
     println("◆ Auto      : $autos")
