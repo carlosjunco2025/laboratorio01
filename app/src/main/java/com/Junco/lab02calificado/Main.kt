@@ -53,13 +53,28 @@ fun main() {
     val scanner = Scanner(System.`in`)
     val listaVehiculos = mutableListOf<Vehiculo>()
 
-    // Configuración de aforo máximo
-    val aforoMaximo = 10
+    val limiteMinimoPermitido = 1
+    var aforoIngresado = 0
 
-    println("=== REGISTRO DE VEHÍCULOS (AFORO MÁXIMO: $aforoMaximo) ===")
+    println("=== CONFIGURACIÓN DEL SISTEMA ===")
 
-    while (listaVehiculos.size < aforoMaximo) {
-        println("\nVehículos registrados: ${listaVehiculos.size}/$aforoMaximo")
+    // Validar únicamente que el aforo sea como mínimo 1
+    while (true) {
+        print("Ingrese el aforo del estacionamiento (Mínimo $limiteMinimoPermitido): ")
+        val input = scanner.nextLine().toIntOrNull()
+
+        if (input != null && input >= limiteMinimoPermitido) {
+            aforoIngresado = input
+            break
+        } else {
+            println("⚠️ Error: El aforo debe ser un número entero mayor o igual a $limiteMinimoPermitido. Intente de nuevo.")
+        }
+    }
+
+    println("\n=== REGISTRO DE VEHÍCULOS (AFORO ESTABLECIDO: $aforoIngresado) ===")
+
+    while (listaVehiculos.size < aforoIngresado) {
+        println("\nVehículos registrados: ${listaVehiculos.size}/$aforoIngresado")
         print("Ingrese Placa (o 'salir' para terminar): ")
         val placa = scanner.nextLine()
         if (placa.lowercase() == "salir") break
@@ -82,8 +97,8 @@ fun main() {
         listaVehiculos.add(Vehiculo(placa, tipo, horas, esFrecuente))
     }
 
-    if (listaVehiculos.size >= aforoMaximo) {
-        println("\n⚠️ ¡SE HA ALCANZADO EL AFORO MÁXIMO PERMITIDO ($aforoMaximo VEHÍCULOS)! ⚠️")
+    if (listaVehiculos.size >= aforoIngresado) {
+        println("\n⚠️ ¡SE HA ALCANZADO EL AFORO MÁXIMO DEL ESTACIONAMIENTO ($aforoIngresado VEHÍCULOS)! ⚠️")
     }
 
     if (listaVehiculos.isEmpty()) {
