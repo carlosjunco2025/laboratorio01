@@ -16,7 +16,7 @@ enum class TipoVehiculo(val descripcion: String, val tarifaBase: Double) {
     }
 }
 
-// Data class con la escala exacta de la pizarra
+// Data class con escala exacta de la pizarra e IGV
 data class Vehiculo(
     val placa: String,
     val tipo: TipoVehiculo,
@@ -42,8 +42,13 @@ data class Vehiculo(
     val descuento: Double
         get() = if (esClienteFrecuente) subtotal * 0.10 else 0.0
 
+    // IGV del 18% sobre el subtotal con descuento
+    val igv: Double
+        get() = (subtotal - descuento) * 0.18
+
+    // Total final a pagar
     val totalPagar: Double
-        get() = subtotal - descuento
+        get() = (subtotal - descuento) + igv
 }
 
 fun main() {
@@ -81,26 +86,26 @@ fun main() {
     }
 
     // --- REPORTE DE BOLETAS ---
-    println("\n==========================================================================")
-    println("                      RESUMEN DE COBRO DE BOLETAS                         ")
-    println("==========================================================================")
-    println(String.format("%-10s | %-10s | %-7s | %-12s | %-10s | %-10s", "PLACA", "TIPO", "HORAS", "SUBTOTAL", "DESCUENTO", "TOTAL PAGAR"))
-    println("--------------------------------------------------------------------------")
+    println("\n========================================================================================")
+    println("                             RESUMEN DE COBRO DE BOLETAS                                ")
+    println("========================================================================================")
+    println(String.format("%-10s | %-10s | %-5s | %-10s | %-10s | %-8s | %-10s", "PLACA", "TIPO", "HORAS", "SUBTOTAL", "DESCUENTO", "IGV", "TOTAL"))
+    println("----------------------------------------------------------------------------------------")
 
     var granTotal = 0.0
     for (v in listaVehiculos) {
         println(
             String.format(
-                "%-10s | %-10s | %-7d | S/ %-9.2f | S/ %-8.2f | S/ %-8.2f",
-                v.placa, v.tipo.descripcion, v.horasEstacionado, v.subtotal, v.descuento, v.totalPagar
+                "%-10s | %-10s | %-5d | S/ %-7.2f | S/ %-8.2f | S/ %-6.2f | S/ %-8.2f",
+                v.placa, v.tipo.descripcion, v.horasEstacionado, v.subtotal, v.descuento, v.igv, v.totalPagar
             )
         )
         granTotal += v.totalPagar
     }
 
-    println("==========================================================================")
+    println("========================================================================================")
     println(String.format("GRAN TOTAL RECAUDADO: S/ %.2f", granTotal))
-    println("==========================================================================")
+    println("========================================================================================")
 
     // --- ESTADÍSTICAS ---
     val mayorPago = listaVehiculos.maxByOrNull { it.totalPagar }
