@@ -16,7 +16,7 @@ enum class TipoVehiculo(val descripcion: String, val tarifaBase: Double) {
     }
 }
 
-// Data class con escala exacta de la pizarra e IGV
+// Data class con escala de recargos e IGV
 data class Vehiculo(
     val placa: String,
     val tipo: TipoVehiculo,
@@ -42,11 +42,9 @@ data class Vehiculo(
     val descuento: Double
         get() = if (esClienteFrecuente) subtotal * 0.10 else 0.0
 
-    // IGV del 18% sobre el subtotal con descuento
     val igv: Double
         get() = (subtotal - descuento) * 0.18
 
-    // Total final a pagar
     val totalPagar: Double
         get() = (subtotal - descuento) + igv
 }
@@ -55,10 +53,14 @@ fun main() {
     val scanner = Scanner(System.`in`)
     val listaVehiculos = mutableListOf<Vehiculo>()
 
-    println("=== REGISTRO DE VEHÍCULOS ===")
+    // Configuración de aforo máximo
+    val aforoMaximo = 10
 
-    while (true) {
-        print("\nIngrese Placa (o 'salir' para terminar): ")
+    println("=== REGISTRO DE VEHÍCULOS (AFORO MÁXIMO: $aforoMaximo) ===")
+
+    while (listaVehiculos.size < aforoMaximo) {
+        println("\nVehículos registrados: ${listaVehiculos.size}/$aforoMaximo")
+        print("Ingrese Placa (o 'salir' para terminar): ")
         val placa = scanner.nextLine()
         if (placa.lowercase() == "salir") break
 
@@ -78,6 +80,10 @@ fun main() {
         val esFrecuente = scanner.nextLine().trim().lowercase() == "si"
 
         listaVehiculos.add(Vehiculo(placa, tipo, horas, esFrecuente))
+    }
+
+    if (listaVehiculos.size >= aforoMaximo) {
+        println("\n⚠️ ¡SE HA ALCANZADO EL AFORO MÁXIMO PERMITIDO ($aforoMaximo VEHÍCULOS)! ⚠️")
     }
 
     if (listaVehiculos.isEmpty()) {
