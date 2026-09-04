@@ -2,7 +2,6 @@ package com.Junco
 
 import java.util.Scanner
 
-// Enum con tarifas base
 enum class TipoVehiculo(val descripcion: String, val tarifaBase: Double) {
     MOTO("Moto", 2.0),
     AUTO("Auto", 4.0),
@@ -16,7 +15,6 @@ enum class TipoVehiculo(val descripcion: String, val tarifaBase: Double) {
     }
 }
 
-// Data class con escala de recargos e IGV
 data class Vehiculo(
     val placa: String,
     val tipo: TipoVehiculo,
@@ -53,30 +51,41 @@ fun main() {
     val scanner = Scanner(System.`in`)
     val listaVehiculos = mutableListOf<Vehiculo>()
 
-    val limiteMinimoAforo = 1
-    val maxHorasPermitidas = 24
+    // ==========================================
+    // PARTE 1: CONFIGURACIÓN DE AFORO
+    // ==========================================
+    println("==========================================")
+    println("      PARTE 1: CONFIGURACIÓN DE AFORO    ")
+    println("==========================================")
+
     var aforoIngresado = 0
+    val limiteMinimoAforo = 1
 
-    println("=== CONFIGURACIÓN DEL SISTEMA ===")
-
-    // Validar aforo mínimo de 1
     while (true) {
         print("Ingrese el aforo del estacionamiento (Mínimo $limiteMinimoAforo): ")
         val input = scanner.nextLine().toIntOrNull()
 
         if (input != null && input >= limiteMinimoAforo) {
             aforoIngresado = input
+            println("✓ Aforo guardado correctamente: $aforoIngresado espacios.")
             break
         } else {
-            println("⚠️ Error: El aforo debe ser un número entero mayor o igual a $limiteMinimoAforo. Intente de nuevo.")
+            println("⚠️ Error: El aforo debe ser un número entero mayor o igual a $limiteMinimoAforo.")
         }
     }
 
-    println("\n=== REGISTRO DE VEHÍCULOS (AFORO ESTABLECIDO: $aforoIngresado) ===")
+    // ==========================================
+    // PARTE 2: REGISTRO DE VEHÍCULOS
+    // ==========================================
+    println("\n==========================================")
+    println("     PARTE 2: REGISTRO DE VEHÍCULOS       ")
+    println("==========================================")
+
+    val maxHorasPermitidas = 24
 
     while (listaVehiculos.size < aforoIngresado) {
-        println("\nVehículos registrados: ${listaVehiculos.size}/$aforoIngresado")
-        print("Ingrese Placa (o 'salir' para terminar): ")
+        println("\n--- Vehículo ${listaVehiculos.size + 1} de $aforoIngresado ---")
+        print("Ingrese Placa (o 'salir' para terminar el registro): ")
         val placa = scanner.nextLine()
         if (placa.lowercase() == "salir") break
 
@@ -85,21 +94,20 @@ fun main() {
         val tipo = TipoVehiculo.desdeString(tipoInput)
 
         if (tipo == null) {
-            println("Tipo inválido. Intente de nuevo.")
+            println("⚠️ Tipo de vehículo inválido. Intente de nuevo.")
             continue
         }
 
-        // Validación de horas entre 1 y 24
         var horas = 0
         while (true) {
-            print("Horas estacionado (Mínimo 1 - Máximo $maxHorasPermitidas): ")
+            print("Horas estacionado (1 - $maxHorasPermitidas hrs): ")
             val inputHoras = scanner.nextLine().toIntOrNull()
 
             if (inputHoras != null && inputHoras in 1..maxHorasPermitidas) {
                 horas = inputHoras
                 break
             } else {
-                println("⚠️ Error: Las horas deben estar entre 1 y $maxHorasPermitidas horas. Intente de nuevo.")
+                println("⚠️ Error: Las horas deben estar entre 1 y $maxHorasPermitidas horas.")
             }
         }
 
@@ -107,6 +115,7 @@ fun main() {
         val esFrecuente = scanner.nextLine().trim().lowercase() == "si"
 
         listaVehiculos.add(Vehiculo(placa, tipo, horas, esFrecuente))
+        println("✓ Vehículo registrado con éxito.")
     }
 
     if (listaVehiculos.size >= aforoIngresado) {
@@ -118,7 +127,7 @@ fun main() {
         return
     }
 
-    // --- REPORTE DE BOLETAS ---
+    // --- REPORTE FINAL ---
     println("\n========================================================================================")
     println("                             RESUMEN DE COBRO DE BOLETAS                                ")
     println("========================================================================================")
