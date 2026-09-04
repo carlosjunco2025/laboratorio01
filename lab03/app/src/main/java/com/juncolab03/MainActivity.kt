@@ -27,12 +27,18 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PantallaRegistro(modifier: Modifier = Modifier) {
+    // Declaración de variables de estado (Parte 3)
+    var nombre by remember { mutableStateOf("") }
+    var precio by remember { mutableStateOf("") }
+    var cantidad by remember { mutableStateOf("") }
+    var mostrarResumen by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        //  FTextos del encabezado con jerarquía tipográfica
+        // Encabezado
         Text(
             text = "Nuevo producto",
             style = MaterialTheme.typography.headlineSmall
@@ -44,5 +50,32 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         )
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        // Campo 1: Nombre del producto
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = { nombre = it },
+            label = { Text("Nombre del producto") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Campos 2 y 3: Precio y Cantidad en la misma fila (Row)
+        Row(modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(
+                value = precio,
+                onValueChange = { precio = it },
+                label = { Text("Precio (S/)") },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            OutlinedTextField(
+                value = cantidad,
+                onValueChange = { cantidad = it },
+                label = { Text("Cantidad") },
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
