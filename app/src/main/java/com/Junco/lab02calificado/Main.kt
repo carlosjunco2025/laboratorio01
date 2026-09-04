@@ -53,21 +53,22 @@ fun main() {
     val scanner = Scanner(System.`in`)
     val listaVehiculos = mutableListOf<Vehiculo>()
 
-    val limiteMinimoPermitido = 1
+    val limiteMinimoAforo = 1
+    val maxHorasPermitidas = 24
     var aforoIngresado = 0
 
     println("=== CONFIGURACIÓN DEL SISTEMA ===")
 
-    // Validar únicamente que el aforo sea como mínimo 1
+    // Validar aforo mínimo de 1
     while (true) {
-        print("Ingrese el aforo del estacionamiento (Mínimo $limiteMinimoPermitido): ")
+        print("Ingrese el aforo del estacionamiento (Mínimo $limiteMinimoAforo): ")
         val input = scanner.nextLine().toIntOrNull()
 
-        if (input != null && input >= limiteMinimoPermitido) {
+        if (input != null && input >= limiteMinimoAforo) {
             aforoIngresado = input
             break
         } else {
-            println("⚠️ Error: El aforo debe ser un número entero mayor o igual a $limiteMinimoPermitido. Intente de nuevo.")
+            println("⚠️ Error: El aforo debe ser un número entero mayor o igual a $limiteMinimoAforo. Intente de nuevo.")
         }
     }
 
@@ -88,8 +89,19 @@ fun main() {
             continue
         }
 
-        print("Horas estacionado: ")
-        val horas = scanner.nextLine().toIntOrNull() ?: 0
+        // Validación de horas entre 1 y 24
+        var horas = 0
+        while (true) {
+            print("Horas estacionado (Mínimo 1 - Máximo $maxHorasPermitidas): ")
+            val inputHoras = scanner.nextLine().toIntOrNull()
+
+            if (inputHoras != null && inputHoras in 1..maxHorasPermitidas) {
+                horas = inputHoras
+                break
+            } else {
+                println("⚠️ Error: Las horas deben estar entre 1 y $maxHorasPermitidas horas. Intente de nuevo.")
+            }
+        }
 
         print("¿Es cliente frecuente? (si/no): ")
         val esFrecuente = scanner.nextLine().trim().lowercase() == "si"
